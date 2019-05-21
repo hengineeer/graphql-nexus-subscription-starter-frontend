@@ -14,6 +14,19 @@ const GET_EXISTING_POSTS = gql`
   }
 `;
 
+//Subscribe to new Posts
+const NEW_POST_SUBSCRIPTION = gql`
+  subscription PostSubscription {
+    post {
+      node {
+        content
+        id
+        author
+      }
+    }
+  }
+`;
+
 export default class ChatBox extends React.Component {
   render() {
     return (
