@@ -47,7 +47,6 @@ class ChatBox extends React.Component {
                 {({ loading, error, data }) => {
                   if (loading) return "Loading...";
                   if (error) return `Error! ${error.message}`;
-                  console.log(data.posts);
                   return (
                     <div>
                       {data.posts.map(post => (
@@ -72,6 +71,15 @@ class ChatBox extends React.Component {
 }
 
 class AppContents extends React.Component {
+  state = {
+    username: "",
+    postcontent: ""
+  };
+
+  handleSubmit(state) {
+    console.log("HI!", state);
+  }
+
   render() {
     return (
       <div className="App">
@@ -82,14 +90,34 @@ class AppContents extends React.Component {
               style={{ marginBottom: "50px", marginTop: "50px", width: "50%" }}
             >
               <InputGroupAddon addonType="prepend">@</InputGroupAddon>
-              <Input placeholder="Username" />
+              <Input
+                placeholder="Username"
+                value={this.state.username}
+                onChange={event =>
+                  this.setState({ username: event.target.value })
+                }
+              />
             </InputGroup>
             <ChatBox />
 
             <InputGroup style={{ marginTop: "50px", width: "95%" }}>
               <InputGroupAddon addonType="prepend">✎</InputGroupAddon>
-              <Input placeholder="Your Message Here" />
-              <Button outline color="secondary" style={{ marginLeft: "10px" }}>
+              <Input
+                placeholder="Your Message Here"
+                value={this.state.postcontent}
+                onChange={event =>
+                  this.setState({ postcontent: event.target.value })
+                }
+              />
+              <Button
+                outline
+                color="secondary"
+                style={{ marginLeft: "10px" }}
+                onClick={() => {
+                  this.handleSubmit(this.state);
+                  this.setState({ postcontent: "" });
+                }}
+              >
                 Submit
               </Button>
             </InputGroup>
