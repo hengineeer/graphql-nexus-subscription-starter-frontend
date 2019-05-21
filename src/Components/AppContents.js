@@ -16,7 +16,7 @@ const CREATE_POST = gql`
 
 export default class AppContents extends React.Component {
   state = {
-    username: "",
+    author: "",
     postcontent: ""
   };
 
@@ -42,9 +42,9 @@ export default class AppContents extends React.Component {
                   <InputGroupAddon addonType="prepend">@</InputGroupAddon>
                   <Input
                     placeholder="Username"
-                    value={this.state.username}
+                    value={this.state.author}
                     onChange={event =>
-                      this.setState({ username: event.target.value })
+                      this.setState({ author: event.target.value })
                     }
                   />
                 </InputGroup>
@@ -64,7 +64,12 @@ export default class AppContents extends React.Component {
                     color="secondary"
                     style={{ marginLeft: "10px" }}
                     onClick={() => {
-                      this.handleSubmit(this.state);
+                      createPost({
+                        variables: {
+                          author: this.state.author,
+                          content: this.state.postcontent
+                        }
+                      });
                       this.setState({ postcontent: "" });
                     }}
                   >
