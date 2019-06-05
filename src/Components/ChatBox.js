@@ -26,6 +26,27 @@ const NEW_POST_SUBSCRIPTION = gql`
     }
   }
 `;
+class ChatView extends React.Component {
+  componentDidMount() {
+    this.props.subscribeToMore();
+  }
+  render() {
+    return (
+      <div>
+        {this.props.data.posts.map(post => (
+          <Alert
+            id={post.id}
+            color="secondary"
+            style={{ fontSize: "15px", width: "100%" }}
+          >
+            <b>{post.author}: </b>
+            {post.content}
+          </Alert>
+        ))}
+      </div>
+    );
+  }
+}
 
 export default class ChatBox extends React.Component {
   render() {
@@ -40,21 +61,26 @@ export default class ChatBox extends React.Component {
           >
             <CardText>
               <Query query={GET_EXISTING_POSTS}>
-                {({ loading, error, data }) => {
+                {({ subscribeToMore, loading, error, data }) => {
                   if (loading) return "Loading...";
                   if (error) return `Error! ${error.message}`;
                   return (
                     <div>
-                      {data.posts.map(post => (
-                        <Alert
-                          id={post.id}
-                          color="secondary"
-                          style={{ fontSize: "15px", width: "100%" }}
-                        >
-                          <b>{post.author}: </b>
-                          {post.content}
-                        </Alert>
-                      ))}
+                      <ChatView
+                        data={data}
+                        subscribeToMore={() =>
+                          subscribeToMore({
+                            document: NEW_POST_SUBSCRIPTION,
+                            updateQuery: (prev, { subscriptionData }) => {
+                              if (!subscriptionData.data) return prev;
+                              const { node } = subscriptionData.data.post;
+                              return Object.assign({}, prev, {
+                                posts: [...prev.posts, node]
+                              });
+                            }
+                          })
+                        }
+                      />
                     </div>
                   );
                 }}
