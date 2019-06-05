@@ -14,6 +14,25 @@ const GET_EXISTING_POSTS = gql`
   }
 `;
 
+class ChatView extends React.Component {
+  render() {
+    return (
+      <div>
+        {this.props.data.posts.map(post => (
+          <Alert
+            id={post.id}
+            color="secondary"
+            style={{ fontSize: "15px", width: "100%" }}
+          >
+            <b>{post.author}: </b>
+            {post.content}
+          </Alert>
+        ))}
+      </div>
+    );
+  }
+}
+
 export default class ChatBox extends React.Component {
   render() {
     return (
@@ -32,16 +51,7 @@ export default class ChatBox extends React.Component {
                   if (error) return `Error! ${error.message}`;
                   return (
                     <div>
-                      {data.posts.map(post => (
-                        <Alert
-                          id={post.id}
-                          color="secondary"
-                          style={{ fontSize: "15px", width: "100%" }}
-                        >
-                          <b>{post.author}: </b>
-                          {post.content}
-                        </Alert>
-                      ))}
+                      <ChatView data={data} />
                     </div>
                   );
                 }}
